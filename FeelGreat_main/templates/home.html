@@ -1,0 +1,17 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  <h1 class="greeting"> Hi {{ user.username }}!</h1>
+  <p> Welcome to the my version of the Feel Great Program!</p>
+  <p> This program is not necessarily about losing weight. It is more about about creating and continuing healthy habits. And, maybe you will lose some weight or slim down along the way.</p>
+{% else %}
+  <p>You are not logged in. You can </p>
+  <a href="{% url 'FeelGreat_main:login' %}">Log In</a> OR
+  <a href="{% url 'FeelGreat_main:register' %}"> Register New User</a>
+  </p>
+{% endif %}
+{% endblock %}

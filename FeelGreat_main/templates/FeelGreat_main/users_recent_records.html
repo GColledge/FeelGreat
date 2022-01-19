@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <p> Here is a list of your most recent entries.</p>
+    <table class='recordtable'>
+        <tr>
+            <th> Date </th>
+            <th> Activity </th>
+            <th> Units Recorded </th>
+            <th> Points Earned </th>
+        </tr>
+        {% for rec in users_records %}
+            <tr>
+
+                <td>{{ rec.record_date }}</td>
+                <td>{{ rec.activity_num }}</td>
+                <td> {{ rec.number_recorded }} </td>
+                <td>{{ rec.points }}</td>
+
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

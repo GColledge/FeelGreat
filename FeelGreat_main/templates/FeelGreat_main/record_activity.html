@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Activity Entry{% endblock %}
+
+{% block content %}
+    <div class="activityinfo">
+        <h3>{{ activity.activity_name }}</h3>
+        <p> This activity is worth {{ activity.point_value }} point(s) per {{ activity.value_type }}.</p>
+        {% if activity.daily_point_limit == 0 %}
+            <p>There is no daily point limit for this activity.</p>
+        {% else %}
+            <p>The daily point limit is {{ activity.daily_point_limit }}.</p>
+        {% endif %}
+    </div>
+    <br><br>
+    <div class="activityentry">
+        <form method="POST" action="">
+            {% csrf_token %}
+            <p> Enter the number of {{ activity.value_type}}s. </p>
+            <input type="number" name="value"/>
+            <button type="submit"> Record </button>
+        </form>
+    </div>
+{% endblock %}

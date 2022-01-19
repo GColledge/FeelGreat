@@ -1,0 +1,30 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Django Auth Tutorial{% endblock %}</title>
+</head>
+<body>
+    <nav>
+    <ul name="navigation bar" class='topnav'>
+        <li class='topnav'><a href="{% url 'FeelGreat_main:index' %}"> Activity List</a></li>
+        {% if user.is_authenticated %}
+            <li class='topnav'><a href="{% url 'FeelGreat_main:record_daily_activity' %}">Make Daily Record</a></li>
+            <li class='topnav'><a href="{% url 'FeelGreat_main:users_recent_records' user.id %}"> Recent Activity </a></li>
+            <li class='topnav'><a href="{% url 'FeelGreat_main:index' %}"> {{user.username}} </a></li>
+            <li class='topnav'><a href="{% url 'FeelGreat_main:logout' %}"> Logout </a></li>
+        {% else %}
+            <li class='topnav'><a href="{% url 'FeelGreat_main:login' %}"> Login </a></li>
+            <li class='topnav'><a href="{% url 'FeelGreat_main:register' %}"> Register </a></li>
+        {% endif%}
+    </ul>
+    </nav><br>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html

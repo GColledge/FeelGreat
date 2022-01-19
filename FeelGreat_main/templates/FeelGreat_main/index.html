@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<p>List of Activities</p>
+    {% if high_scoring_activities %}
+        <ul>
+        {% for activity in high_scoring_activities %}
+            <li><a href="{% url 'FeelGreat_main:record_activity' activity.activity_number %}">{{ activity.activity_name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No Activities are available.</p>
+    {% endif %}
+{% endblock %}

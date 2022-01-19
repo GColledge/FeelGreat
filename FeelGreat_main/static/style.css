@@ -1,0 +1,105 @@
+h1 {
+    color: red;
+}
+/* topnav is the navigation bar at the top */
+.topnav ul {
+  background-color: #444444;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.topnav li {
+  display: inline;
+  float: left;
+  border-right: 1px solid #bbb
+}
+
+.topnav a {
+    display: block;
+    text-align: center;
+}
+
+.topnav a:link {
+    color: white;
+  display: block;
+  padding: 8px;
+  background-color: #444444;
+  text-decoration: none;
+}
+
+.topnav a:visited {
+    color:white;
+  display: block;
+  padding: 8px;
+  background-color: #444444;
+  text-decoration: none;
+}
+
+.topnav a:hover {
+    color: white;
+  display: block;
+  padding: 8px;
+  background-color: #aaaaaa;
+}
+
+.topnav a:active {
+    color: white;
+  display: block;
+  padding: 8px;
+  background-color: #444444;
+}
+
+body {
+  background-image: url("heic1307a.jpg");
+  color: yellow;
+  text-align: center;
+}
+
+main {
+    background-color: rgba(150, 150, 256, 0.6);
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.right a {
+    display: block;
+    float: right;
+}
+
+nav {
+    grid-area: ed-grid-header;
+    z-index: 12;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.recordtable {
+    display: table;
+    background: white;
+    color: black;
+    width: 100%;
+}
+
+.recordtable tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.recordtable th {
+    font-weight: bold;
+}
+
+.recordtable td {
+}
+
+.daily_list li {
+    text-align: left;
+    list-style-type: none;
+}

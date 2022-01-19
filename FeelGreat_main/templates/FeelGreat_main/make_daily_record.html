@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Daily Record{% endblock %}
+
+{% block content %}
+<h2> Today's Activity Entry </h2>
+<form method="POST" action="">
+    {% csrf_token %}
+
+    <ul class="daily_list">
+        {% for acty, acty_string in quantity_stuff %}
+            <li><label for="{{acty_string}}" title="{{acty.act_description}}">{{acty.activity_name}}: </label>
+            <input type="number" id="{{acty_string}}" name="{{acty_string}}">
+            <label for="{{acty_string}}">{{acty.value_type}}s per day.</label>
+            </li>
+        {% endfor %}
+    </ul>
+    <ul class="daily_list">
+        {% for act, act_string in checklist_stuff %}
+            <li><input type="checkbox" id="{{act_string}}" name="{{act_string}}" >
+            <label for="{{act_string}}" title="{{act.act_description}}">{{act.activity_name}}</label></li>
+        {% endfor %}
+    </ul>
+    <input type="submit" />
+</form>
+
+{% endblock %}

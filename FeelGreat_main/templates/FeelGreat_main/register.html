@@ -1,0 +1,34 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1>Register Here</h1>
+{% for mes in messages %}
+    <h3>{{ mes }}</h3>
+{% endfor %}
+<form method="POST" action="">
+    {% csrf_token %}
+    <p>User Name:</p>
+    <input type="text" name="username" placeholder="Username"/>
+    <br>
+    <p>Password:</p>
+    <input type="password" name="password" placeholder="password"/>
+    <p>Password again:</p>
+    <input type="password" name="password2" placeholder="same password"/>
+    <br>
+    <p>First Name:</p>
+    <input type="text" name="firstname" placeholder="First Name" />
+    <br>
+    <p>Last Name:</p>
+    <input type="text" name="lastname"  placeholder="Last Name"/>
+    <br>
+    <p>E-mail:</p>
+    <input type="email" name="email" placeholder="E-mail"/>
+    <br>
+    <p>Birthdate</p>
+    <input type="date" name="birthdate"/>
+    <input type="submit" />
+</form>
+{% endblock %}
