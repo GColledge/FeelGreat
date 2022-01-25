@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from datetime import date
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -20,7 +20,7 @@ class UserProfile(models.Model):
         return "User: {}".format(self.user_name)
 
     def get_age(self):
-        return date.today() - self.birth_date
+        return datetime.today() - self.birth_date
 
     def get_profile(user, firstname, lastname, birthday):
         tester = UserProfile.objects.filter(user_name=user.username)
@@ -54,7 +54,7 @@ class ActivityLookup(models.Model):
                                   max_length=20,
                                   choices=UnitsOfMeasure.choices,
                                   default=UnitsOfMeasure.EACH,)
-    # point_vaue is the number of points for a single unit of activity
+    # point_value is the number of points for a single unit of activity
     point_value = models.FloatField('Points Per Unit')
     # maximum number fo points earnable for this activity per day.
     # A zero indicates no limit.
@@ -64,12 +64,24 @@ class ActivityLookup(models.Model):
     def __str__(self):
         return self.activity_name
 
-    def get_daily_activity():
-        act_list = ActivityLookup.objects.exclude(value_type=UnitsOfMeasure.DAILY_SPECIAL).exclude(activity_name="Weigh In")
-        daily_seed = (date.today() - date(year=2022, month=1, day=2)).days
+    @staticmethod
+    def get_daily_activity(**kwargs):
+        """
+        this function is designed to figure out what "daily special" activity
+        is assigned to a specific date.
+
+        date_of_interest is the only possible parameter. Put in a datetime date
+         or leave blank for the current date.
+        """
+        if 'date_of_interest' in kwargs:
+            doi = kwargs['date_of_interest']
+        else:
+            doi = datetime.now()
+        act_list = ActivityLookup.objects.filter(value_type=UnitsOfMeasure.DAILY_SPECIAL).exclude(activity_name="Weigh In")
+        daily_seed = (doi - datetime(year=2022, month=1, day=2)).days
         daily_seed = daily_seed % len(act_list)
-        if daily_seed == 1:  # 1 in monday
-            return ActivityLookup.objects.get(activity_name == "Weigh In")
+        if daily_seed == 1:  # 1 is monday. Monday's are always weigh in days
+            return ActivityLookup.objects.get(activity_name="Weigh In")
         else:
             return act_list[daily_seed]
 
@@ -90,7 +102,7 @@ class ActivityRecord(models.Model):
     def create(new_points, number_recorded, user, act_num):
         act = ActivityLookup.objects.get(activity_number=act_num)
         userProf = UserProfile.objects.get(user_auth_obj=user)
-        record = ActivityRecord(record_date=date.today(),
+        record = ActivityRecord(record_date=datetime.now(),
                                 user_num=userProf,
                                 activity_num=act,
                                 number_recorded=number_recorded,
@@ -111,6 +123,9 @@ class ActivityRecord(models.Model):
             if is_checked:
                 points = float(activity.point_value)
                 value = 1  # DAILY means only one per day
+        elif activity.activity_name == 'Weigh In':
+            points = 5
+            value = float(request.POST['Weigh In'])  # This should be the number of pounds the user weighs
         else:  # number entry type activities
             if request.POST[activity.activity_name] == '':
                 value = 0
@@ -119,7 +134,7 @@ class ActivityRecord(models.Model):
             points = float(activity.point_value) * value
         if points > activity.daily_point_limit and activity.daily_point_limit != 0:
             points = activity.daily_point_limit
-        records = ActivityRecord.objects.filter(user_num=request.user.id).filter(record_date=date.today()).filter(activity_num=activity_id)
+        records = ActivityRecord.objects.filter(user_num=request.user.id).filter(record_date=datetime.now()).filter(activity_num=activity_id)
         points_so_far_today = sum([r.points for r in records])
         if points_so_far_today >= activity.daily_point_limit:
             points = 0

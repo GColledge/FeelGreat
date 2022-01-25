@@ -28,7 +28,6 @@ def index(request):
 def record_activity(request, activity_id):
     if request.method == "POST":
         value = float(request.POST['value'])
-        act = ActivityLookup.objects.get(pk=activity_id)
         points, _ = ActivityRecord.verify_points_input(request, activity_id)
         user = request.user
         user_prof = UserProfile.objects.filter(user_name=user.username)[0]
