@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from datetime import datetime
+from datetime import date, datetime
 from django.contrib.auth.models import User
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -20,7 +20,7 @@ class UserProfile(models.Model):
         return "User: {}".format(self.user_name)
 
     def get_age(self):
-        return datetime.today() - self.birth_date
+        return date.today() - self.birth_date
 
     def get_profile(user, firstname, lastname, birthday):
         tester = UserProfile.objects.filter(user_name=user.username)
@@ -76,14 +76,13 @@ class ActivityLookup(models.Model):
         if 'date_of_interest' in kwargs:
             doi = kwargs['date_of_interest']
         else:
-            doi = datetime.now()
+            doi = date.today()
         act_list = ActivityLookup.objects.filter(value_type=UnitsOfMeasure.DAILY_SPECIAL).exclude(activity_name="Weigh In")
-        daily_seed = (doi - datetime(year=2022, month=1, day=2)).days
-        daily_seed = daily_seed % len(act_list)
-        if daily_seed == 1:  # 1 is monday. Monday's are always weigh in days
+        daily_seed = (doi - date(year=2022, month=1, day=2)).days
+        if daily_seed % 7 == 1:  # 1 is monday. Monday's are always weigh in days
             return ActivityLookup.objects.get(activity_name="Weigh In")
-        else:
-            return act_list[daily_seed]
+        daily_seed = daily_seed % len(act_list)
+        return act_list[daily_seed]
 
 
 class ActivityRecord(models.Model):
