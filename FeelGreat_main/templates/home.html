@@ -4,14 +4,21 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-  <h1 class="greeting"> Hi {{ user.username }}!</h1>
-  <p> Welcome to the my version of the Feel Great Program!</p>
-  <p> This program is not necessarily about losing weight. It is more about about creating and continuing healthy habits. And, maybe you will lose some weight or slim down along the way.</p>
-{% else %}
-  <p>You are not logged in. You can </p>
-  <a href="{% url 'FeelGreat_main:login' %}">Log In</a> OR
-  <a href="{% url 'FeelGreat_main:register' %}"> Register New User</a>
-  </p>
-{% endif %}
+  {% if user.is_authenticated %}
+    <h1 class="greeting"> Hi {{ user.username }}!</h1>
+  {% else %}
+    <p>You are not logged in. You can
+    <a href="{% url 'FeelGreat_main:login' %}">Log In</a> OR
+    <a href="{% url 'FeelGreat_main:register' %}"> Register New User</a>
+    </p>
+  {% endif %}
+  <p> Welcome to my version of the Feel Great Program!</p>
+  <p> This program is not necessarily about losing weight. It is more about creating and continuing healthy habits. And, maybe you will lose some weight or slim down along the way.</p>
+  <h2 title="{{todays_activity.act_description}}"> The unique activity for today is: {{todays_activity.activity_name}}</h2>
+  <h2 title="{{tomorrows_activity.act_description}}"> Tomorrows unique activity is: {{tomorrows_activity.activity_name}}</h2>
+  <!--   {% if todays_act %}
+      <h2 title="{{todays_act.act_description}}"> The unique activity for today is: {{todays_act.activity_name}}</h2>
+      <h2 title="{{tomorrows_act.act_description}}"> Tomorrows unique activity is: {{tomorrows_act.activity_name}}</h2>
+    {% endif %}
+  -->
 {% endblock %}

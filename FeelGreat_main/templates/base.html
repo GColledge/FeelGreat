@@ -14,10 +14,12 @@
         {% if user.is_authenticated %}
             <li class='topnav'><a href="{% url 'FeelGreat_main:record_daily_activity' %}">Make Daily Record</a></li>
             <li class='topnav'><a href="{% url 'FeelGreat_main:users_recent_records' user.id %}"> Recent Activity </a></li>
-            <li class='topnav'><a href="{% url 'FeelGreat_main:index' %}"> {{user.username}} </a></li>
+            <li class='topnav'><a href="{% url 'FeelGreat_main:home' %}"> {{user.username}} </a></li>
+            <li class='topnav'><a href="{% url 'FeelGreat_main:index' %}"> Activities </a></li>
             <li class='topnav'><a href="{% url 'FeelGreat_main:logout' %}"> Logout </a></li>
         {% else %}
             <li class='topnav'><a href="{% url 'FeelGreat_main:login' %}"> Login </a></li>
+            <li class='topnav'><a href="{% url 'FeelGreat_main:home' %}"> Feel Great </a></li>
             <li class='topnav'><a href="{% url 'FeelGreat_main:register' %}"> Register </a></li>
         {% endif%}
     </ul>
@@ -27,4 +29,4 @@
         {% endblock %}
     </main>
 </body>
-</html
+</html>

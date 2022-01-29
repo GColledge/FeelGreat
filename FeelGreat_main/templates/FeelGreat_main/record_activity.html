@@ -12,11 +12,16 @@
             <p>The daily point limit is {{ activity.daily_point_limit }}.</p>
         {% endif %}
     </div>
-    <br><br>
+    <br>
+    <div class="activityinfo">
+        <p>
+            {{activity.act_description}}
+        </p>
+    </div>
+    <br>
     <div class="activityentry">
         <form method="POST" action="">
             {% csrf_token %}
-            <p> Enter the number of {{ activity.value_type}}s. </p>
             <input type="number" name="value"/>
             <button type="submit"> Record </button>
         </form>
