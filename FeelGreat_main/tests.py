@@ -139,3 +139,15 @@ class ActivityLookUpTestCase(TestCase):
                          msg="activity number: {}\nvalue type: {}\npoint_value: {}".format(monday_activity.activity_number,
                                                                                            monday_activity.value_type,
                                                                                            monday_activity.point_value))
+
+    def test_get_daily_activity(self):
+        """this test is designed to ensure that the same activity wont show up two days in a row."""
+        list_of_dates = [date(2022, 1, 29), date(2022, 1, 30) ,date(2022, 1, 31),  # A monday
+                         date(2022, 2, 1), date(2022, 2, 2), date(2022, 2, 3)]
+        list_of_activities = [ActivityLookup.get_daily_activity(date_of_interest=day) for day in list_of_dates]
+        for i in range(len(list_of_activities) - 1):
+            self.assertNotEqual(list_of_activities[i], list_of_activities[i + 1])
+
+
+
+
