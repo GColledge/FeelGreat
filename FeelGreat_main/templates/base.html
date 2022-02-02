@@ -16,7 +16,6 @@
             <li class='topnav'><a href="{% url 'FeelGreat_main:users_recent_records' user.id %}"> Recent Activity </a></li>
             <li class='topnav'><a href="{% url 'FeelGreat_main:progress_page' %}"> Progress </a></li>
             <li class='topnav'><a href="{% url 'FeelGreat_main:home' %}"> {{user.username}} </a></li>
-            <li class='topnav'><a href="{% url 'FeelGreat_main:index' %}"> Activities </a></li>
             <li class='topnav'><a href="{% url 'FeelGreat_main:logout' %}"> Logout </a></li>
         {% else %}
             <li class='topnav'><a href="{% url 'FeelGreat_main:login' %}"> Login </a></li>

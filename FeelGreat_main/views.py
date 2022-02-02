@@ -4,7 +4,7 @@ from django.template import loader
 from django.views import generic
 
 from .models import ActivityLookup, ActivityRecord, UserProfile, UnitsOfMeasure
-from .utils import get_plot
+from .utils import get_plot, convert_to_percent, get_differentials
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 
@@ -33,10 +33,10 @@ def record_activity(request, activity_id):
         value = float(request.POST[act.activity_name])
         points, _ = ActivityRecord.verify_points_input(request, activity_id)
         user = request.user
-        user_prof = UserProfile.objects.filter(user_name=user.username)[0]
         if not user.is_authenticated:
-            messages.info("Please sign-in or register in order to track activity.")
+            messages.info(request, "Please sign-in or register in order to track activity.")
             return render(request, 'FeelGreat_main/register.html')
+        user_prof = UserProfile.objects.filter(user_name=user.username)[0]
         record = ActivityRecord.create(new_points=points, number_recorded=value,
                                        user=user, act_num=activity_id,)
         record.save()
@@ -63,16 +63,20 @@ def users_recent_records(request, user_id):
 
 def progress_summary(request):
     if request.user.is_authenticated:
-        print(" call to progress_summary was made")
         weigh_in_act = ActivityLookup.objects.get(activity_name="Weigh In")
         weigh_in_records = ActivityRecord.objects.filter(user_num=request.user.id).filter(activity_num=weigh_in_act.activity_number)
         if len(weigh_in_records) > 1:
-            print("enough records were made.")
-            weigh_in_records.order_by('-record_date')
+            weigh_in_records = weigh_in_records.order_by('record_date')
+            print(weigh_in_records)
             x = [x.record_date for x in weigh_in_records]
             y = [y.number_recorded for y in weigh_in_records]
-            progress_plot = get_plot(x, y)
-            context = {'progress_plot': progress_plot}
+            diffs = get_differentials(y)
+            perc = convert_to_percent(y)
+            diff_plot = get_plot(x, diffs, plot_title="Change in Weight",
+                                 y_label="Weight Change (pounds)")
+            percent_plot = get_plot(x, perc, plot_title="Percent Weight Change",
+                                    y_label="Percent of original weight")
+            context = {'percent_plot': percent_plot, 'diff_plot': diff_plot}
             return render(request, "FeelGreat_main/progress_page.html", context)
         else:
             print("not enough records")

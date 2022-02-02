@@ -21,11 +21,30 @@ def get_graph():
     buffer.close()
     return graph
 
-def get_plot(x, y):
+def get_plot(x, y, size=(6, 3), plot_title='Plot', x_label='Date', y_label='Value'):
     plt.switch_backend('AGG')
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=size)
     plt.plot(x, y)
-    plt.title('Generic Plot')
+    plt.title(plot_title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     plt.xticks(rotation=45)
+    plt.tight_layout()
     graph = get_graph()
     return graph
+
+def convert_to_percent(raw_values):
+    """ this function takes a list of numbers and returns
+    each value as a percent of the first value in the list."""
+    first_value = raw_values[0]
+    percentages = [(100 * v/first_value) for v in raw_values]
+    return percentages
+
+def get_differentials(raw_values):
+    """This function takes a list of numbers and returns the
+    difference of the numbers in order."""
+    diffs = [0]
+    for i in range(len(raw_values) - 1):
+        dif = raw_values[i + 1] - raw_values[i]
+        diffs.append(dif)
+    return diffs
