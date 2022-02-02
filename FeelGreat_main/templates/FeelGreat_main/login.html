@@ -5,9 +5,7 @@
 
 {% block content %}
 <h2>Log In</h2>
-{% for mes in messages %}
-    <h3> {{ mes }}</h3><br>
-{% endfor %}
+
 <form method="POST" action="">
   {% csrf_token %}
   <p>Username: </p><br>

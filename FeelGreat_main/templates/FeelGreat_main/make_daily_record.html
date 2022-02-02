@@ -20,7 +20,7 @@
             <li><input type="checkbox" id="{{act_string}}" name="{{act_string}}" >
             <label for="{{act_string}}" title="{{act.act_description}}">{{act.activity_name}}</label></li>
         {% endfor %}
-        {% if daily_activity_string=='Weigh In' %}
+        {% if weigh_in %}
             <li><input type="number" id="Weigh In" name="Weigh In" >
              <label for="Weigh In" title="{{daily_activity.act_description}}">{{daily_activity.activity_name}}</label></li>
         {% else %}

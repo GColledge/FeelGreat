@@ -22,7 +22,7 @@
     <div class="activityentry">
         <form method="POST" action="">
             {% csrf_token %}
-            <input type="number" name="value"/>
+            <input type="number" name="{{activity.activity_name}}"/>
             <button type="submit"> Record </button>
         </form>
     </div>
