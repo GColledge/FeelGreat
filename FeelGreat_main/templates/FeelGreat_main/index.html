@@ -9,6 +9,9 @@
         {% for activity in high_scoring_activities %}
             <li><a href="{% url 'FeelGreat_main:record_activity' activity.activity_number %}">{{ activity.activity_name }}</a></li>
         {% endfor %}
+            {% if weigh_in_activity %}
+                <li><a href="{% url 'FeelGreat_main:record_activity' weigh_in_activity.activity_number %}">{{ weigh_in_activity.activity_name }}</a></li>
+            {% endif %}
         </ul>
     {% else %}
         <p>No Activities are available.</p>
