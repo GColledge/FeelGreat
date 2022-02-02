@@ -131,9 +131,13 @@ class ActivityRecord(models.Model):
             else:
                 value = float(request.POST[activity.activity_name])
             points = float(activity.point_value) * value
-        if points > activity.daily_point_limit and activity.daily_point_limit != 0:
+        # account for bad activities with negative points
+        if activity.point_value < 0 and activity.daily_point_limit==0:
+            return points, value
+        # Check that the points don't exceed the daily point limit
+        elif points > activity.daily_point_limit and activity.daily_point_limit != 0:
             points = activity.daily_point_limit
-        records = ActivityRecord.objects.filter(user_num=request.user.id).filter(record_date=datetime.now()).filter(activity_num=activity_id)
+        records = ActivityRecord.objects.filter(user_num=request.user.id).filter(record_date__gte=date.today()).filter(activity_num=activity_id)
         points_so_far_today = sum([r.points for r in records])
         if points_so_far_today >= activity.daily_point_limit:
             points = 0
