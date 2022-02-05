@@ -109,6 +109,8 @@ def record_daily_activity(request):
     if request.method == "POST":
         if request.user.is_authenticated:
             user_prof = UserProfile.objects.get(user_number=request.user.id)
+            qs_4_dailyact = ActivityLookup.objects.filter(pk=daily_act.activity_number)
+            activities = activities.union(qs_4_dailyact)  # append daily act queryset
             for act in activities:
                 activity_id = ActivityLookup.objects.get(activity_name=act.activity_name).activity_number
                 points, value = ActivityRecord.verify_points_input(request,
@@ -139,6 +141,12 @@ def record_daily_activity(request):
         return render(request, "FeelGreat_main/make_daily_record.html",
                       context)
 
+
+def leader_board(request):
+    if request.method == 'POST':
+        pass
+    else:
+        return render(request, "FeelGreat_main/leader_board.html")
 
 def login(request):
     if request.method == "POST":
