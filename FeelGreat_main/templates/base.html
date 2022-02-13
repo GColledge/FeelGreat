@@ -11,6 +11,7 @@
     <nav>
     <ul name="navigation bar" class='topnav'>
         <li class='topnav'><a href="{% url 'FeelGreat_main:index' %}"> Activity List</a></li>
+        <li class='topnav'><a href="{% url 'FeelGreat_main:leader_board' %}"> Leader Board </a></li>
         {% if user.is_authenticated %}
             <li class='topnav'><a href="{% url 'FeelGreat_main:record_daily_activity' %}">Make Daily Record</a></li>
             <li class='topnav'><a href="{% url 'FeelGreat_main:users_recent_records' user.id %}"> Recent Activity </a></li>

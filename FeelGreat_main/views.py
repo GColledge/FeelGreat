@@ -4,7 +4,8 @@ from django.template import loader
 from django.views import generic
 
 from .models import ActivityLookup, ActivityRecord, UserProfile, UnitsOfMeasure
-from .utils import get_plot, convert_to_percent, get_differentials
+from .utils import get_differentials, convert_to_percent, get_plot, get_point_leaders, get_weight_loss_leaders,\
+    get_frequency_leaders, get_streak_leaders
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 
@@ -144,7 +145,22 @@ def record_daily_activity(request):
 
 def leader_board(request):
     if request.method == 'POST':
-        pass
+        comparison = request.POST['comparison']
+        if comparison == "points":
+            leader_list = get_point_leaders()  # this shows all users
+            units = "points"
+        elif comparison == "weight loss":
+            leader_list = get_weight_loss_leaders()
+            units = "% of starting weight"
+        elif comparison == "frequency":
+            leader_list = get_frequency_leaders()
+            units = " the number of days with records"
+        elif comparison == "streak":
+            leader_list = get_streak_leaders()
+            units = "days in a row"
+        context = {"leaders": leader_list, "title": comparison, "units": units}
+        return render(request, "FeelGreat_main/leader_board.html", context)
+
     else:
         return render(request, "FeelGreat_main/leader_board.html")
 
