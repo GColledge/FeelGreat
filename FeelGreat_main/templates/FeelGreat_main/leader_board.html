@@ -1,0 +1,28 @@
+<!-- templates/leader_board.html -->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+  {% if leaders %}
+    <h2>Current {{title}} leaders:</h2>
+    <h4>(reported as {{units}})</h4>
+    {% for l in leaders %}
+      <p>{{l.0}}  ..........  {{l.1}}</p>
+    {% endfor %}
+  {% else %}
+    <p>Enter criteria for leader board to appear</p>
+  {% endif %}
+  <br>
+  <form method="POST" action="">
+    {% csrf_token %}
+    <label for="comparison">next comparison:</label>
+    <select id="comparison" name="comparison">
+      <option value="points">Points</option>
+      <option value="weight loss">Weight Lost</option>
+      <option value="frequency">Frequency</option>
+      <option value="streak">Streak</option>
+    </select>
+    <input type="submit" />
+  </form>
+{% endblock %}

@@ -12,6 +12,7 @@ urlpatterns = [
     path('progress_page/', views.progress_summary, name='progress_page'),
     path('makerecord/<int:activity_id>/', views.record_activity, name='record_activity'),
     path('record_daily_activity/', views.record_daily_activity, name='record_daily_activity'),
+    path('leader_board/', views.leader_board, name='leader_board'),
     # path('accounts/', include('django.contrib.auth.urls')),
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),

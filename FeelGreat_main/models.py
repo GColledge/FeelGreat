@@ -114,7 +114,11 @@ class ActivityRecord(models.Model):
         """
         activity = ActivityLookup.objects.get(pk=activity_id)
         # get initial points and activity value
-        if activity.value_type == UnitsOfMeasure.DAILY:  # check box activities
+        if activity.activity_name == 'Weigh In':
+            points = 5
+            value = float(request.POST['Weigh In'])  # This should be the number of pounds the user weighs
+        elif activity.value_type == UnitsOfMeasure.DAILY or \
+                activity.value_type == UnitsOfMeasure.DAILY_SPECIAL:  # check box activities
             try:
                 is_checked = request.POST[activity.activity_name]
             except MultiValueDictKeyError as mvdke:
@@ -122,9 +126,6 @@ class ActivityRecord(models.Model):
             if is_checked:
                 points = float(activity.point_value)
                 value = 1  # DAILY means only one per day
-        elif activity.activity_name == 'Weigh In':
-            points = 5
-            value = float(request.POST['Weigh In'])  # This should be the number of pounds the user weighs
         else:  # number entry type activities
             if request.POST[activity.activity_name] == '':
                 value = 0

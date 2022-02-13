@@ -4,7 +4,8 @@ from django.template import loader
 from django.views import generic
 
 from .models import ActivityLookup, ActivityRecord, UserProfile, UnitsOfMeasure
-from .utils import get_plot, convert_to_percent, get_differentials
+from .utils import get_differentials, convert_to_percent, get_plot, get_point_leaders, get_weight_loss_leaders,\
+    get_frequency_leaders, get_streak_leaders
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 
@@ -109,6 +110,8 @@ def record_daily_activity(request):
     if request.method == "POST":
         if request.user.is_authenticated:
             user_prof = UserProfile.objects.get(user_number=request.user.id)
+            qs_4_dailyact = ActivityLookup.objects.filter(pk=daily_act.activity_number)
+            activities = activities.union(qs_4_dailyact)  # append daily act queryset
             for act in activities:
                 activity_id = ActivityLookup.objects.get(activity_name=act.activity_name).activity_number
                 points, value = ActivityRecord.verify_points_input(request,
@@ -139,6 +142,27 @@ def record_daily_activity(request):
         return render(request, "FeelGreat_main/make_daily_record.html",
                       context)
 
+
+def leader_board(request):
+    if request.method == 'POST':
+        comparison = request.POST['comparison']
+        if comparison == "points":
+            leader_list = get_point_leaders()  # this shows all users
+            units = "points"
+        elif comparison == "weight loss":
+            leader_list = get_weight_loss_leaders()
+            units = "% of starting weight"
+        elif comparison == "frequency":
+            leader_list = get_frequency_leaders()
+            units = " the number of days with records"
+        elif comparison == "streak":
+            leader_list = get_streak_leaders()
+            units = "days in a row"
+        context = {"leaders": leader_list, "title": comparison, "units": units}
+        return render(request, "FeelGreat_main/leader_board.html", context)
+
+    else:
+        return render(request, "FeelGreat_main/leader_board.html")
 
 def login(request):
     if request.method == "POST":

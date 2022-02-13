@@ -1,6 +1,6 @@
 
 # This is a group of custom made context processors
-from FeelGreat_main.models import ActivityLookup
+from FeelGreat_main.models import ActivityLookup, UserProfile
 import datetime
 
 def daily_renderer(request):
