@@ -5,6 +5,14 @@
 {% block content %}
     <h3>Here is a Plot of your weight</h3>
     <div name="Plot Area">
+        {% if points_plot %}
+        <img src="data:image.png;base64, {{points_plot|safe}}" >
+        {% else %}
+        <p> Sorry, something went wrong with creating your points plot.
+            Please check back later or contact the website maintainer.</p>
+        {% endif %}
+        <br>
+        <br>
         {% if percent_plot %}
         <img src="data:image.png;base64, {{percent_plot|safe}}" >
         {% else %}

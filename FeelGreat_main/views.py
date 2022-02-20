@@ -5,7 +5,7 @@ from django.views import generic
 
 from .models import ActivityLookup, ActivityRecord, UserProfile, UnitsOfMeasure
 from .utils import get_differentials, convert_to_percent, get_plot, get_point_leaders, get_weight_loss_leaders,\
-    get_frequency_leaders, get_streak_leaders
+    get_frequency_leaders, get_streak_leaders, cumsum
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 
@@ -66,27 +66,49 @@ def progress_summary(request):
     if request.user.is_authenticated:
         weigh_in_act = ActivityLookup.objects.get(activity_name="Weigh In")
         weigh_in_records = ActivityRecord.objects.filter(user_num=request.user.id).filter(activity_num=weigh_in_act.activity_number)
+        points_records = ActivityRecord.objects.filter(user_num=request.user.id)
+        print("Length of reocrds list: {}".format(len(points_records)))
+        if len(points_records)==0:
+            print("not enough records")
+            messages.info(request, "You do not have enough activities recorded. \
+                                    Keep using the app and be sure to record activity.")
+            high_scoring_activities = ActivityLookup.objects.exclude(value_type=UnitsOfMeasure.DAILY_SPECIAL).order_by(
+                '-point_value')
+            weigh_in_activity = ActivityLookup.objects.get(activity_name="Weigh In")
+            context = {'high_scoring_activities': high_scoring_activities,
+                       'weigh_in_activity': weigh_in_activity}
+            return render(request, "FeelGreat_main/index.html", context)
+        context = {}
+        # make the points plot
+        points_records = points_records.order_by('record_date')
+        dates = [x.record_date for x in points_records]
+        cum_points = [y.points for y in points_records]
+        cum_points = cumsum(cum_points)
+        print(dates)
+        print(cum_points)
+        points_plot = get_plot(dates, cum_points, plot_title="Cumulative Sum of Points",
+                               y_label="Points")
+        context['points_plot'] = points_plot
+        print(context)
+        # make the weight based plots
         if len(weigh_in_records) > 1:
             weigh_in_records = weigh_in_records.order_by('record_date')
-            print(weigh_in_records)
             x = [x.record_date for x in weigh_in_records]
             y = [y.number_recorded for y in weigh_in_records]
             diffs = get_differentials(y)
             perc = convert_to_percent(y)
             diff_plot = get_plot(x, diffs, plot_title="Change in Weight",
                                  y_label="Weight Change (pounds)")
-            percent_plot = get_plot(x, perc, plot_title="Percent Weight Change",
+            percent_plot = get_plot(x, perc, plot_title="Percent Weight Lost",
                                     y_label="Percent of original weight")
-            context = {'percent_plot': percent_plot, 'diff_plot': diff_plot}
-            return render(request, "FeelGreat_main/progress_page.html", context)
+            context['percent_plot'] = percent_plot
+            context['diff_plot'] = diff_plot
         else:
             print("not enough records")
-            messages.info(request, "You do not have enough Weigh In activities recorded. \
-                                    keep using the app and be sure to weigh in.")
-            users_records = ActivityRecord.objects.filter(user_num=request.user.id)
-            users_records = users_records.order_by('-record_date')
-            context = {'current_user': request.user, 'users_records': users_records}
-            return render(request, "FeelGreat_main/users_recent_records.html", context)
+            messages.info(request, "You do not have enough Weigh In activities recorded to show weight \
+                                    loss progress. Keep using the app and be sure to weigh in.")
+        return render(request, "FeelGreat_main/progress_page.html", context)
+
     else:
         print("user was not logged in")
         messages.info(request, "You need to log in before \

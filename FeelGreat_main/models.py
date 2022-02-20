@@ -115,8 +115,13 @@ class ActivityRecord(models.Model):
         activity = ActivityLookup.objects.get(pk=activity_id)
         # get initial points and activity value
         if activity.activity_name == 'Weigh In':
-            points = 5
-            value = float(request.POST['Weigh In'])  # This should be the number of pounds the user weighs
+            value = request.POST['Weigh In']  # This should be the number of pounds the user weighs
+            if value == '':
+                value = 0
+                points = 0
+            else:
+                value = float(value)
+                points = 5
         elif activity.value_type == UnitsOfMeasure.DAILY or \
                 activity.value_type == UnitsOfMeasure.DAILY_SPECIAL:  # check box activities
             try:
@@ -134,7 +139,9 @@ class ActivityRecord(models.Model):
             points = float(activity.point_value) * value
         # account for bad activities with negative points
         if activity.point_value < 0 and activity.daily_point_limit==0:
-            return points, value
+            return points, value  #this may need to change if negative points ever get capped
+        elif activity.daily_point_limit==0:  # no processing needs to occur
+            return points, value            # for activities with no limits
         # Check that the points don't exceed the daily point limit
         elif points > activity.daily_point_limit and activity.daily_point_limit != 0:
             points = activity.daily_point_limit

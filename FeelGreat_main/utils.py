@@ -200,3 +200,10 @@ def get_streak_leaders(group=None, limit=10, start_date=None, end_date=None,
     if limit > len(leader_list):
         limit = len(leader_list)
     return leader_list[:limit]
+
+def cumsum(x_list):
+    f_x_list = [x_list[0]]
+    for i in range(1, len(x_list)):
+        value = f_x_list[i - 1] + x_list[i]
+        f_x_list.append(value)
+    return f_x_list

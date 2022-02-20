@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from datetime import date, timedelta
 
 from .models import ActivityLookup, ActivityRecord, UserProfile
-
+from .utils import get_differentials, convert_to_percent, get_plot, get_point_leaders, get_weight_loss_leaders,\
+    get_frequency_leaders, get_streak_leaders, get_points
 # Create your tests here.
 
 
@@ -132,6 +133,8 @@ class ActivityLookUpTestCase(TestCase):
         act_lookup_6.daily_point_limit = 5
         act_lookup_6.save()
 
+
+
     def test_get_daily_activity_for_monday(self):
         date_of_a_monday = date(2022, 1, 24)  # this date is an actual monday
         monday_activity = ActivityLookup.get_daily_activity(date_of_interest=date_of_a_monday)
@@ -147,6 +150,95 @@ class ActivityLookUpTestCase(TestCase):
         list_of_activities = [ActivityLookup.get_daily_activity(date_of_interest=day) for day in list_of_dates]
         for i in range(len(list_of_activities) - 1):
             self.assertNotEqual(list_of_activities[i], list_of_activities[i + 1])
+
+
+class UtilMethodsTestCase(TestCase):
+    def setUp(self):
+        user_a = User(username="test", email="test@invalid.com")
+        user_a.password = "somepassword"
+        user_a.save()
+
+        user_b = User(username="test_b", email="test@invalid.com")
+        user_b.password = "somepassword"
+        user_b.save()
+
+        act_lookup_1 = ActivityLookup()
+        act_lookup_1.activity_name = "eat testing"
+        act_lookup_1.value_type = 'each'
+        act_lookup_1.point_value = 10.0
+        act_lookup_1.daily_point_limit = 30
+        act_lookup_1.save()
+
+        act_lookup_2 = ActivityLookup()
+        act_lookup_2.activity_name = "push testing"
+        act_lookup_2.value_type = 'each'
+        act_lookup_2.point_value = 1.0
+        act_lookup_2.daily_point_limit = 0
+        act_lookup_2.save()
+
+        act_lookup_3 = ActivityLookup()
+        act_lookup_3.activity_name = "ounce testing"
+        act_lookup_3.value_type = 'oz'
+        act_lookup_3.point_value = 0.3
+        act_lookup_3.daily_point_limit = 30
+        act_lookup_3.save()
+
+        act_lookup_4 = ActivityLookup()
+        act_lookup_4.activity_name = "daily task testing"
+        act_lookup_4.value_type = 'daily_calendar'
+        act_lookup_4.point_value = 5.0
+        act_lookup_4.daily_point_limit = 5
+        act_lookup_4.save()
+
+        act_lookup_5 = ActivityLookup()
+        act_lookup_5.activity_name = "Weigh In"
+        act_lookup_5.value_type = 'lbs.'
+        act_lookup_5.point_value = 5.0
+        act_lookup_5.daily_point_limit = 5
+        act_lookup_5.save()
+
+        act_lookup_6 = ActivityLookup()
+        act_lookup_6.activity_name = "daily task testing 2"
+        act_lookup_6.value_type = 'daily_calendar'
+        act_lookup_6.point_value = 5.0
+        act_lookup_6.daily_point_limit = 5
+        act_lookup_6.save()
+
+        prof_a = UserProfile.get_profile(user_a, "test", "A", date(1985, 9, 9))
+        prof_a.save()
+
+        prof_b = UserProfile.get_profile(user_b, "test", "B", date(1980, 3, 6))
+        prof_b.save()
+
+        for i in range(1, 10):
+
+            act_rec = ActivityRecord()
+            act_rec.record_date = date(2022, 1, i)
+            act_rec.activity_num = act_lookup_4
+            act_rec.user_num = prof_a
+            act_rec.number_recorded = i
+            act_rec.points = i
+            act_rec.save()
+
+            if i%3 != 0:
+                act_rec = ActivityRecord()
+                act_rec.record_date = date(2022, 1, i)
+                act_rec.activity_num = act_lookup_6
+                act_rec.user_num = prof_b
+                act_rec.number_recorded = i
+                act_rec.points = i * 2
+                act_rec.save()
+
+    def test_get_points(self):
+        prof_a = UserProfile.objects.get(last_name="A")
+        points = get_points(prof_a)
+        self.assertEqual(points, 55)
+
+
+    def test_get_points_leaders(self):
+        leader_list = get_point_leaders()
+        self.assertEqual(len(leader_list), 2)
+
 
 
 
